@@ -6,7 +6,7 @@
     <title>AuraVest — Portfolio</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body style="padding-bottom: 80px;"> <!-- Padding untuk bottom nav -->
+<body style="padding-bottom: 80px;">
     
     <div class="card" style="border: none; background: transparent; box-shadow: none; max-width: 420px;">
         <p class="subtitle" style="margin-bottom: 8px;">Selamat kembali, <b id="uname" style="color: white;">Pelabur</b></p>
@@ -14,7 +14,7 @@
         <div class="balance-box">
             <div class="balance-label">Jumlah Nilai Portfolio</div>
             <div class="balance-amount" id="balance">RM 0.00</div>
-            <div class="balance-change" id="profit">+ RM 0.00 (0.0%) Hari Ini</div>
+            <div class="balance-change" id="profit" style="color: #8b92a5;">Sila buat deposit untuk mula</div>
         </div>
 
         <div class="chart-container">
@@ -30,16 +30,13 @@
             </svg>
         </div>
 
-        <!-- Butang Deposit & Withdraw -->
         <div style="display: flex; gap: 10px; margin-top: 20px;">
             <button onclick="window.location.href='deposit.html'" style="flex: 1; background: #3b82f6; color: white;">Deposit Dana</button>
             <button onclick="window.location.href='withdraw.html'" style="flex: 1; background: #10b981; color: #0b0f19;">Withdraw</button>
         </div>
 
-        <!-- Senarai Coin (Macam Luno) -->
         <div class="market-list">
             <div class="market-title">Pasaran (Market)</div>
-            
             <div class="coin-row">
                 <div class="coin-info">
                     <div class="coin-icon" style="background: #f7931a; color: white;">₿</div>
@@ -53,7 +50,6 @@
                     <div class="coin-change">+3.2%</div>
                 </div>
             </div>
-
             <div class="coin-row">
                 <div class="coin-info">
                     <div class="coin-icon" style="background: #627eea; color: white;">Ξ</div>
@@ -67,7 +63,6 @@
                     <div class="coin-change">+1.8%</div>
                 </div>
             </div>
-
             <div class="coin-row">
                 <div class="coin-info">
                     <div class="coin-icon" style="background: #facc15; color: black;">Au</div>
@@ -84,7 +79,7 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation (Macam App) -->
+    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <a href="dashboard.html" class="nav-item active">
             <span class="nav-icon">🏠</span> Home
@@ -104,29 +99,26 @@
         // Ambil nama pelabur
         document.getElementById('uname').textContent = localStorage.getItem('investor_name') || 'Pelabur';
         
-        // Ambil baki dari localStorage (default RM129.57 kalau takde)
-        let startBalance = parseFloat(localStorage.getItem('fake_balance') || '129.57');
-        let balance = startBalance;
+        // Baca baki dari localStorage. Kalau takde, mula dengan 0.
+        let balance = parseFloat(localStorage.getItem('fake_balance') || '0');
         
-        // Setup graf
-        let points = Array(20).fill(startBalance);
+        // Setup graf dengan 0 dulu
+        let points = Array(20).fill(0);
         
         // Update UI mula-mula
         document.getElementById('balance').textContent = `RM ${balance.toFixed(2)}`;
 
-        setInterval(() => {
-            // Setiap 2 saat, duit naik sikit
-            balance += (Math.random() * 0.80);
-            
-            // Simpan balik ke localStorage supaya tak reset bila refresh
-            localStorage.setItem('fake_balance', balance);
-            
+        // Fungsi untuk update UI
+        function updateDashboard() {
             document.getElementById('balance').textContent = `RM ${balance.toFixed(2)}`;
             
-            // Kira profit (compare dengan startBalance)
-            let profit = balance - 100;
-            let pct = (profit / 100) * 100;
-            document.getElementById('profit').textContent = `+ RM ${profit.toFixed(2)} (${pct.toFixed(2)}%) Hari Ini`;
+            if (balance > 0) {
+                // Kira profit (anggap modal asal RM100)
+                let profit = balance - 100;
+                let pct = (profit / 100) * 100;
+                document.getElementById('profit').textContent = `+ RM ${profit.toFixed(2)} (${pct.toFixed(2)}%) Hari Ini`;
+                document.getElementById('profit').style.color = "#10b981";
+            }
 
             // Update graf
             points.push(balance);
@@ -136,7 +128,7 @@
             let fillD = `M 0,140 `;
             let minVal = Math.min(...points) - 5;
             let maxVal = Math.max(...points) + 5;
-            let range = maxVal - minVal;
+            let range = maxVal - minVal || 1;
 
             points.forEach((p, i) => {
                 let x = (i / 19) * 400;
@@ -149,6 +141,17 @@
 
             document.getElementById('chart-line').setAttribute('d', d);
             document.getElementById('chart-fill').setAttribute('d', fillD);
+        }
+
+        updateDashboard(); // Jalankan sekali masa load
+
+        // Simulasi untung naik HANYA kalau ada duit
+        setInterval(() => {
+            if (balance > 0) {
+                balance += (Math.random() * 0.80);
+                localStorage.setItem('fake_balance', balance);
+                updateDashboard();
+            }
         }, 2000);
     </script>
 </body>
