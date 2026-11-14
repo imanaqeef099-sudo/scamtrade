@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Saya</title>
+    <title>AuraVest — Portfolio</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <div class="card">
+<body style="padding-bottom: 80px;"> <!-- Padding untuk bottom nav -->
+    
+    <div class="card" style="border: none; background: transparent; box-shadow: none; max-width: 420px;">
         <p class="subtitle" style="margin-bottom: 8px;">Selamat kembali, <b id="uname" style="color: white;">Pelabur</b></p>
         
         <div class="balance-box">
             <div class="balance-label">Jumlah Nilai Portfolio</div>
-            <div class="balance-amount" id="balance">RM 100.00</div>
-            <div class="balance-change" id="profit">+ RM 0.00 (0.0%) Hari Ini</div>
+            <div class="balance-amount" id="balance">RM 129.57</div>
+            <div class="balance-change" id="profit">+ RM 29.57 (29.57%) Hari Ini</div>
         </div>
 
         <div class="chart-container">
@@ -29,16 +30,83 @@
             </svg>
         </div>
 
-        <button onclick="window.location.href='withdraw.html'">Pengeluaran Dana</button>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button onclick="window.location.href='withdraw.html'" style="flex: 1;">Pengeluaran Dana</button>
+        </div>
+
+        <!-- Senarai Coin (Macam Luno) -->
+        <div class="market-list">
+            <div class="market-title">Pasaran (Market)</div>
+            
+            <div class="coin-row">
+                <div class="coin-info">
+                    <div class="coin-icon" style="background: #f7931a; color: white;">₿</div>
+                    <div>
+                        <div class="coin-name">Bitcoin</div>
+                        <div class="coin-ticker">BTC</div>
+                    </div>
+                </div>
+                <div class="coin-price">
+                    <div class="coin-val">RM 245,120</div>
+                    <div class="coin-change">+3.2%</div>
+                </div>
+            </div>
+
+            <div class="coin-row">
+                <div class="coin-info">
+                    <div class="coin-icon" style="background: #627eea; color: white;">Ξ</div>
+                    <div>
+                        <div class="coin-name">Ethereum</div>
+                        <div class="coin-ticker">ETH</div>
+                    </div>
+                </div>
+                <div class="coin-price">
+                    <div class="coin-val">RM 12,450</div>
+                    <div class="coin-change">+1.8%</div>
+                </div>
+            </div>
+
+            <div class="coin-row">
+                <div class="coin-info">
+                    <div class="coin-icon" style="background: #facc15; color: black;">Au</div>
+                    <div>
+                        <div class="coin-name">Gold (Emas)</div>
+                        <div class="coin-ticker">XAU/USD</div>
+                    </div>
+                </div>
+                <div class="coin-price">
+                    <div class="coin-val">RM 8,320</div>
+                    <div class="coin-change down">-0.4%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation (Macam App) -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">🏠</span> Home
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">📈</span> Market
+        </a>
+        <a href="withdraw.html" class="nav-item">
+            <span class="nav-icon">💳</span> Wallet
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">👤</span> Account
+        </a>
     </div>
 
     <script>
         document.getElementById('uname').textContent = localStorage.getItem('investor_name') || 'Pelabur';
-        let balance = 100.00;
-        let points = Array(20).fill(100);
         
+        let balance = 129.57;
+        let points = Array(20).fill(100); // Mula dengan lengkung naik
+        points = points.map((_, i) => 100 + (i * 1.5)); 
+
         setInterval(() => {
-            balance += (Math.random() * 1.5);
+            balance += (Math.random() * 0.80);
             document.getElementById('balance').textContent = `RM ${balance.toFixed(2)}`;
             
             let profit = balance - 100;
@@ -50,8 +118,8 @@
             
             let d = "";
             let fillD = `M 0,140 `;
-            let minVal = Math.min(...points) - 2;
-            let maxVal = Math.max(...points) + 2;
+            let minVal = Math.min(...points) - 5;
+            let maxVal = Math.max(...points) + 5;
             let range = maxVal - minVal;
 
             points.forEach((p, i) => {
@@ -65,7 +133,7 @@
 
             document.getElementById('chart-line').setAttribute('d', d);
             document.getElementById('chart-fill').setAttribute('d', fillD);
-        }, 1500);
+        }, 2000);
     </script>
 </body>
 </html>
