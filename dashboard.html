@@ -36,39 +36,67 @@
     </div>
 
     <div class="content">
-        <div class="balance-card">
-            <div class="balance-label">Jumlah Portfolio (RM)</div>
-            <div class="balance-amount" id="balance">RM 0.00</div>
-            <div class="action-buttons">
-                <button class="btn-primary" onclick="window.location.href='deposit.html'">Deposit</button>
-                <button class="btn-secondary" onclick="window.location.href='withdraw.html'">Withdraw</button>
+        <div class="portfolio-card">
+            <div class="portfolio-label">Jumlah Portfolio</div>
+            <div class="portfolio-amount" id="balance">RM 0.00</div>
+            <div class="btn-group">
+                <a href="deposit.html" class="btn btn-primary">Deposit</a>
+                <a href="withdraw.html" class="btn btn-secondary">Withdraw</a>
             </div>
         </div>
 
-        <h2 class="section-title">Market</h2>
-        
-        <div class="coin-list-card">
-            <div class="coin-row">
-                <div class="coin-left">
-                    <div class="coin-icon" style="background: #f7931a;">₿</div>
-                    <div class="coin-names">
-                        <h3>Bitcoin</h3>
-                        <p>BTC</p>
-                    </div>
-                </div>
-                <div class="coin-right">
-                    <div class="coin-price">RM <span id="btc-price">279,678.00</span></div>
-                    <div class="coin-change down" id="btc-change">-3.27%</div>
-                </div>
+        <h2 class="section-title" style="margin-bottom: 16px;">Pergerakan terbesar (24j)</h2>
+        <div class="h-scroll">
+            <div class="market-card">
+                <div class="market-header"><div class="market-icon" style="background: #a855f7;">B</div> BERA <span style="color: var(--text-muted); font-size: 12px;">›</span></div>
+                <div class="market-percent" style="color: var(--green);">34.05%</div>
+                <div class="market-price">RM 0.55</div>
+                <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M0,25 Q20,20 40,22 T70,15 T100,5" fill="none" stroke="var(--primary)" stroke-width="2"/></svg>
             </div>
-            <!-- Butang Trade -->
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button class="btn-buy" onclick="buyBTC()" style="flex: 1;">Buy BTC</button>
-                <button class="btn-sell" onclick="sellBTC()" style="flex: 1;">Sell BTC</button>
+            <div class="market-card">
+                <div class="market-header"><div class="market-icon" style="background: #8b5cf6;">T</div> TIA <span style="color: var(--text-muted); font-size: 12px;">›</span></div>
+                <div class="market-percent" style="color: var(--red);">-13.58%</div>
+                <div class="market-price">RM 1.54</div>
+                <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M0,10 Q30,8 50,15 T100,25" fill="none" stroke="var(--primary)" stroke-width="2"/></svg>
             </div>
-            <div style="margin-top: 10px; font-size: 12px; color: var(--text-muted); text-align: center;">
-                Aset BTC anda: <b id="btc-asset">0.000000</b> BTC
+        </div>
+
+        <div class="section-header">
+            <h2 class="section-title">Watchlist</h2>
+            <span class="section-link">Sunting</span>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active">1h</div>
+            <div class="tab">1m</div>
+            <div class="tab">1b</div>
+            <div class="tab">6b</div>
+        </div>
+
+        <div class="coin-card">
+            <div class="coin-left">
+                <div class="coin-icon" style="background: #f7931a;">₿</div>
+                <div class="coin-name"><h3>Bitcoin</h3><p>BTC</p></div>
             </div>
+            <div class="coin-right">
+                <div class="coin-price">RM 279,678</div>
+                <div class="coin-change down">-3.27%</div>
+            </div>
+        </div>
+
+        <div class="coin-card">
+            <div class="coin-left">
+                <div class="coin-icon" style="background: #627eea;">Ξ</div>
+                <div class="coin-name"><h3>Ethereum</h3><p>ETH</p></div>
+            </div>
+            <div class="coin-right">
+                <div class="coin-price">RM 7,857</div>
+                <div class="coin-change down">-3.48%</div>
+            </div>
+        </div>
+
+        <div class="add-coin">
+            <div class="add-icon">+</div> Tambah duit
         </div>
     </div>
 
@@ -82,64 +110,21 @@
         document.getElementById('uname-sidebar').textContent = name;
         document.getElementById('avatar-initial').textContent = name.charAt(0).toUpperCase();
 
-        // Setup Baki RM & Aset BTC
         let balance = parseFloat(localStorage.getItem('fake_balance') || '0');
-        let btcAsset = parseFloat(localStorage.getItem('btc_asset') || '0');
-        let btcPrice = 279678.00; // Harga fake
-
-        function updateUI() {
-            // Duit RM
-            document.getElementById('balance').textContent = `RM ${balance.toFixed(2)}`;
-            localStorage.setItem('fake_balance', balance);
-            
-            // Aset BTC
-            document.getElementById('btc-asset').textContent = btcAsset.toFixed(6);
-            localStorage.setItem('btc_asset', btcAsset);
-
-            // Auto naik sikit harga BTC
-            btcPrice += (Math.random() - 0.4) * 50; 
-            document.getElementById('btc-price').textContent = btcPrice.toLocaleString('en-MY', {minimumFractionDigits: 2});
-        }
+        document.getElementById('balance').textContent = `RM ${balance.toFixed(2)}`;
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('open');
         }
 
-        // Fungsi Beli BTC
-        function buyBTC() {
-            if (balance < 100) {
-                alert("Baki tidak mencukupi. Minimum beli RM100.");
-                return;
+        setInterval(() => {
+            if (balance > 0) {
+                balance += (Math.random() * 0.50);
+                localStorage.setItem('fake_balance', balance);
+                document.getElementById('balance').textContent = `RM ${balance.toFixed(2)}`;
             }
-            let buyAmount = 100; // Beli RM100
-            balance -= buyAmount;
-            let btcBought = buyAmount / btcPrice;
-            btcAsset += btcBought;
-            
-            alert(`Berjaya beli ${btcBought.toFixed(6)} BTC dengan harga RM100.`);
-            updateUI();
-        }
-
-        // Fungsi Jual BTC
-        function sellBTC() {
-            if (btcAsset <= 0) {
-                alert("Anda tiada aset BTC untuk dijual.");
-                return;
-            }
-            let sellAmount = btcAsset * btcPrice;
-            balance += sellAmount;
-            btcAsset = 0;
-            
-            alert(`Berjaya jual aset dengan nilai RM${sellAmount.toFixed(2)}.`);
-            updateUI();
-        }
-
-        // Update UI mula-mula
-        updateUI();
-
-        // Harga auto naik setiap 3 saat
-        setInterval(updateUI, 3000);
+        }, 3000);
     </script>
 </body>
 </html>
