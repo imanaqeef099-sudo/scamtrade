@@ -6,19 +6,19 @@
     <title>AuraVest — Portfolio</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body style="padding-bottom: 80px;">
+<body>
     
-    <div class="card" style="border: none; background: transparent; box-shadow: none; max-width: 420px;">
+    <div class="card">
         <p class="subtitle" style="margin-bottom: 8px;">Selamat kembali, <b id="uname" style="color: white;">Pelabur</b></p>
         
         <div class="balance-box">
             <div class="balance-label">Jumlah Nilai Portfolio</div>
             <div class="balance-amount" id="balance">RM 0.00</div>
-            <div class="balance-change" id="profit" style="color: #8b92a5;">Sila buat deposit untuk mula</div>
+            <div class="balance-change" id="profit" style="color: #94a3b8;">Sila buat deposit untuk mula</div>
         </div>
 
         <div class="chart-container">
-            <svg class="chart-svg" id="chart" viewBox="0 0 400 140" preserveAspectRatio="none">
+            <svg class="chart-svg" id="chart" viewBox="0 0 400 160" preserveAspectRatio="none">
                 <defs>
                     <linearGradient id="gradient" x1="0" x2="0" y1="0" y2="1">
                         <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
@@ -26,20 +26,21 @@
                     </linearGradient>
                 </defs>
                 <path id="chart-fill" d="" fill="url(#gradient)" />
-                <path id="chart-line" d="" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path id="chart-line" class="chart-line" d="" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         </div>
 
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
-            <button onclick="window.location.href='deposit.html'" style="flex: 1; background: #3b82f6; color: white;">Deposit Dana</button>
-            <button onclick="window.location.href='withdraw.html'" style="flex: 1; background: #10b981; color: #0b0f19;">Withdraw</button>
+        <div style="display: flex; gap: 12px;">
+            <button class="btn-deposit" onclick="window.location.href='deposit.html'">Deposit</button>
+            <button class="btn-withdraw" onclick="window.location.href='withdraw.html'">Withdraw</button>
         </div>
 
         <div class="market-list">
-            <div class="market-title">Pasaran (Market)</div>
+            <div class="market-title">Market <span>Lihat Semua</span></div>
+            
             <div class="coin-row">
                 <div class="coin-info">
-                    <div class="coin-icon" style="background: #f7931a; color: white;">₿</div>
+                    <div class="coin-icon" style="background: rgba(247, 147, 26, 0.1); color: #f7931a;">₿</div>
                     <div>
                         <div class="coin-name">Bitcoin</div>
                         <div class="coin-ticker">BTC</div>
@@ -50,9 +51,10 @@
                     <div class="coin-change">+3.2%</div>
                 </div>
             </div>
+
             <div class="coin-row">
                 <div class="coin-info">
-                    <div class="coin-icon" style="background: #627eea; color: white;">Ξ</div>
+                    <div class="coin-icon" style="background: rgba(98, 126, 234, 0.1); color: #627eea;">Ξ</div>
                     <div>
                         <div class="coin-name">Ethereum</div>
                         <div class="coin-ticker">ETH</div>
@@ -63,11 +65,12 @@
                     <div class="coin-change">+1.8%</div>
                 </div>
             </div>
+
             <div class="coin-row">
                 <div class="coin-info">
-                    <div class="coin-icon" style="background: #facc15; color: black;">Au</div>
+                    <div class="coin-icon" style="background: rgba(250, 204, 21, 0.1); color: #facc15;">Au</div>
                     <div>
-                        <div class="coin-name">Gold (Emas)</div>
+                        <div class="coin-name">Gold</div>
                         <div class="coin-ticker">XAU/USD</div>
                     </div>
                 </div>
@@ -79,73 +82,51 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <a href="dashboard.html" class="nav-item active">
-            <span class="nav-icon">🏠</span> Home
-        </a>
-        <a href="#" class="nav-item">
-            <span class="nav-icon">📈</span> Market
-        </a>
-        <a href="deposit.html" class="nav-item">
-            <span class="nav-icon">💳</span> Deposit
-        </a>
-        <a href="#" class="nav-item">
-            <span class="nav-icon">👤</span> Account
-        </a>
+        <a href="dashboard.html" class="nav-item active"><span class="nav-icon">🏠</span> Home</a>
+        <a href="#" class="nav-item"><span class="nav-icon">📈</span> Market</a>
+        <a href="deposit.html" class="nav-item"><span class="nav-icon">💳</span> Deposit</a>
+        <a href="#" class="nav-item"><span class="nav-icon">👤</span> Account</a>
     </div>
 
     <script>
-        // Ambil nama pelabur
         document.getElementById('uname').textContent = localStorage.getItem('investor_name') || 'Pelabur';
-        
-        // Baca baki dari localStorage. Kalau takde, mula dengan 0.
         let balance = parseFloat(localStorage.getItem('fake_balance') || '0');
-        
-        // Setup graf dengan 0 dulu
         let points = Array(20).fill(0);
         
-        // Update UI mula-mula
         document.getElementById('balance').textContent = `RM ${balance.toFixed(2)}`;
 
-        // Fungsi untuk update UI
         function updateDashboard() {
             document.getElementById('balance').textContent = `RM ${balance.toFixed(2)}`;
             
             if (balance > 0) {
-                // Kira profit (anggap modal asal RM100)
                 let profit = balance - 100;
                 let pct = (profit / 100) * 100;
                 document.getElementById('profit').textContent = `+ RM ${profit.toFixed(2)} (${pct.toFixed(2)}%) Hari Ini`;
                 document.getElementById('profit').style.color = "#10b981";
             }
 
-            // Update graf
             points.push(balance);
             if(points.length > 20) points.shift();
             
-            let d = "";
-            let fillD = `M 0,140 `;
-            let minVal = Math.min(...points) - 5;
-            let maxVal = Math.max(...points) + 5;
+            let d = "", fillD = `M 0,160 `;
+            let minVal = Math.min(...points) - 5, maxVal = Math.max(...points) + 5;
             let range = maxVal - minVal || 1;
 
             points.forEach((p, i) => {
                 let x = (i / 19) * 400;
-                let y = 140 - ((p - minVal) / range) * 140;
+                let y = 160 - ((p - minVal) / range) * 160;
                 if(y < 0) y = 0;
                 d += (i === 0 ? "M" : "L") + ` ${x},${y} `;
                 fillD += `L ${x},${y} `;
             });
-            fillD += `L 400,140 Z`;
+            fillD += `L 400,160 Z`;
 
             document.getElementById('chart-line').setAttribute('d', d);
             document.getElementById('chart-fill').setAttribute('d', fillD);
         }
+        updateDashboard();
 
-        updateDashboard(); // Jalankan sekali masa load
-
-        // Simulasi untung naik HANYA kalau ada duit
         setInterval(() => {
             if (balance > 0) {
                 balance += (Math.random() * 0.80);
