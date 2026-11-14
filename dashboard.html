@@ -13,8 +13,8 @@
         
         <div class="balance-box">
             <div class="balance-label">Jumlah Nilai Portfolio</div>
-            <div class="balance-amount" id="balance">RM 129.57</div>
-            <div class="balance-change" id="profit">+ RM 29.57 (29.57%) Hari Ini</div>
+            <div class="balance-amount" id="balance">RM 0.00</div>
+            <div class="balance-change" id="profit">+ RM 0.00 (0.0%) Hari Ini</div>
         </div>
 
         <div class="chart-container">
@@ -30,8 +30,10 @@
             </svg>
         </div>
 
+        <!-- Butang Deposit & Withdraw -->
         <div style="display: flex; gap: 10px; margin-top: 20px;">
-            <button onclick="window.location.href='withdraw.html'" style="flex: 1;">Pengeluaran Dana</button>
+            <button onclick="window.location.href='deposit.html'" style="flex: 1; background: #3b82f6; color: white;">Deposit Dana</button>
+            <button onclick="window.location.href='withdraw.html'" style="flex: 1; background: #10b981; color: #0b0f19;">Withdraw</button>
         </div>
 
         <!-- Senarai Coin (Macam Luno) -->
@@ -84,14 +86,14 @@
 
     <!-- Bottom Navigation (Macam App) -->
     <div class="bottom-nav">
-        <a href="#" class="nav-item active">
+        <a href="dashboard.html" class="nav-item active">
             <span class="nav-icon">🏠</span> Home
         </a>
         <a href="#" class="nav-item">
             <span class="nav-icon">📈</span> Market
         </a>
-        <a href="withdraw.html" class="nav-item">
-            <span class="nav-icon">💳</span> Wallet
+        <a href="deposit.html" class="nav-item">
+            <span class="nav-icon">💳</span> Deposit
         </a>
         <a href="#" class="nav-item">
             <span class="nav-icon">👤</span> Account
@@ -99,20 +101,34 @@
     </div>
 
     <script>
+        // Ambil nama pelabur
         document.getElementById('uname').textContent = localStorage.getItem('investor_name') || 'Pelabur';
         
-        let balance = 129.57;
-        let points = Array(20).fill(100); // Mula dengan lengkung naik
-        points = points.map((_, i) => 100 + (i * 1.5)); 
+        // Ambil baki dari localStorage (default RM129.57 kalau takde)
+        let startBalance = parseFloat(localStorage.getItem('fake_balance') || '129.57');
+        let balance = startBalance;
+        
+        // Setup graf
+        let points = Array(20).fill(startBalance);
+        
+        // Update UI mula-mula
+        document.getElementById('balance').textContent = `RM ${balance.toFixed(2)}`;
 
         setInterval(() => {
+            // Setiap 2 saat, duit naik sikit
             balance += (Math.random() * 0.80);
+            
+            // Simpan balik ke localStorage supaya tak reset bila refresh
+            localStorage.setItem('fake_balance', balance);
+            
             document.getElementById('balance').textContent = `RM ${balance.toFixed(2)}`;
             
+            // Kira profit (compare dengan startBalance)
             let profit = balance - 100;
             let pct = (profit / 100) * 100;
             document.getElementById('profit').textContent = `+ RM ${profit.toFixed(2)} (${pct.toFixed(2)}%) Hari Ini`;
 
+            // Update graf
             points.push(balance);
             if(points.length > 20) points.shift();
             
