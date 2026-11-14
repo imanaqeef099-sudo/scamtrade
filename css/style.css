@@ -40,3 +40,29 @@ button:hover { background: #34d399; transform: translateY(-2px); }
 .chat-input-area { display: flex; padding: 10px; background: #0f172a; border-top: 1px solid #334155; }
 .chat-input-area input { flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #1e293b; color: white; font-size: 13px; }
 .chat-input-area button { padding: 8px 15px; margin-left: 8px; background: #22c55e; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 13px; }
+
+/* Bottom Navigation Bar (Macam Luno) */
+.bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(11, 15, 25, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-around; padding: 12px 0 20px 0; z-index: 100; }
+.nav-item { display: flex; flex-direction: column; align-items: center; color: #8b92a5; font-size: 10px; font-weight: 600; text-decoration: none; gap: 4px; }
+.nav-item.active { color: #10b981; }
+.nav-icon { font-size: 20px; }
+
+/* Market List (Senarai Coin) */
+.market-list { margin-top: 24px; width: 100%; }
+.market-title { font-size: 14px; font-weight: 800; margin-bottom: 12px; color: #fff; }
+.coin-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.coin-info { display: flex; align-items: center; gap: 12px; }
+.coin-icon { width: 32px; height: 32px; border-radius: 50%; background: #1e293b; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 14px; }
+.coin-name { font-size: 14px; font-weight: 600; }
+.coin-ticker { font-size: 12px; color: #8b92a5; }
+.coin-price { text-align: right; }
+.coin-val { font-size: 14px; font-weight: 600; }
+.coin-change { font-size: 12px; color: #10b981; }
+.coin-change.down { color: #ef4444; }
+
+/* Chat Button Floating */
+.chat-widget { position: fixed; bottom: 80px; right: 20px; width: auto; background: transparent; border: none; box-shadow: none; }
+.chat-header { width: 50px; height: 50px; border-radius: 50%; background: #10b981; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); padding: 0; }
+.chat-header span { display: none; } /* Sembunyi teks, tunjuk ikon je */
+.chat-header::after { content: '💬'; }
+.chat-body { position: fixed; bottom: 140px; right: 20px; width: 300px; background: #1e293b; border-radius: 12px; border: 1px solid #334155; }
