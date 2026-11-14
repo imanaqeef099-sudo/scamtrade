@@ -7,133 +7,226 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    
-    <div class="card">
-        <p class="subtitle" style="margin-bottom: 8px;">Selamat kembali, <b id="uname" style="color: white;">Pelabur</b></p>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar (Gambar 1) -->
+    <div class="sidebar" id="sidebar">
+        <div class="profile-header">
+            <p>ACCOUNT</p>
+            <h2 id="uname-sidebar">Pelabur</h2>
+        </div>
         
-        <div class="balance-box">
-            <div class="balance-label">Jumlah Nilai Portfolio</div>
-            <div class="balance-amount" id="balance">RM 0.00</div>
-            <div class="balance-change" id="profit" style="color: #94a3b8;">Sila buat deposit untuk mula</div>
+        <div class="menu-section">
+            <!-- Link ke Verify IC -->
+            <a href="verify.html" class="menu-item">
+                <div class="menu-item-left"><span class="menu-icon">👤</span> Akaun & Tetapan</div>
+                <span class="arrow">›</span>
+            </a>
+            <a href="#" class="menu-item">
+                <div class="menu-item-left"><span class="menu-icon">🛡️</span> Keselamatan</div>
+                <span class="arrow">›</span>
+            </a>
         </div>
 
-        <div class="chart-container">
-            <svg class="chart-svg" id="chart" viewBox="0 0 400 160" preserveAspectRatio="none">
-                <defs>
-                    <linearGradient id="gradient" x1="0" x2="0" y1="0" y2="1">
-                        <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
-                        <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
-                    </linearGradient>
-                </defs>
-                <path id="chart-fill" d="" fill="url(#gradient)" />
-                <path id="chart-line" class="chart-line" d="" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+        <div class="menu-section">
+            <div class="menu-title">Dagang</div>
+            <a href="#" class="menu-item">
+                <div class="menu-item-left"><span class="menu-icon">📊</span> Exchange</div>
+                <div class="toggle"></div>
+            </a>
+            <a href="#" class="menu-item">
+                <div class="menu-item-left"><span class="menu-icon">🪙</span> Kripto</div>
+                <span class="arrow">›</span>
+            </a>
+            <a href="#" class="menu-item">
+                <div class="menu-item-left"><span class="menu-icon">🔔</span> Penggera harga</div>
+                <span class="arrow">›</span>
+            </a>
         </div>
 
-        <div style="display: flex; gap: 12px;">
-            <button class="btn-deposit" onclick="window.location.href='deposit.html'">Deposit</button>
-            <button class="btn-withdraw" onclick="window.location.href='withdraw.html'">Withdraw</button>
+        <div class="menu-section">
+            <div class="menu-title">Ganjaran kripto</div>
+            <a href="#" class="menu-item">
+                <div class="menu-item-left"><span class="menu-icon">🎁</span> Ganjaran</div>
+                <span class="menu-badge">RM 25</span>
+                <span class="arrow">›</span>
+            </a>
         </div>
 
-        <div class="market-list">
-            <div class="market-title">Market <span>Lihat Semua</span></div>
-            
-            <div class="coin-row">
-                <div class="coin-info">
-                    <div class="coin-icon" style="background: rgba(247, 147, 26, 0.1); color: #f7931a;">₿</div>
-                    <div>
-                        <div class="coin-name">Bitcoin</div>
-                        <div class="coin-ticker">BTC</div>
-                    </div>
-                </div>
-                <div class="coin-price">
-                    <div class="coin-val">RM 245,120</div>
-                    <div class="coin-change">+3.2%</div>
-                </div>
-            </div>
-
-            <div class="coin-row">
-                <div class="coin-info">
-                    <div class="coin-icon" style="background: rgba(98, 126, 234, 0.1); color: #627eea;">Ξ</div>
-                    <div>
-                        <div class="coin-name">Ethereum</div>
-                        <div class="coin-ticker">ETH</div>
-                    </div>
-                </div>
-                <div class="coin-price">
-                    <div class="coin-val">RM 12,450</div>
-                    <div class="coin-change">+1.8%</div>
-                </div>
-            </div>
-
-            <div class="coin-row">
-                <div class="coin-info">
-                    <div class="coin-icon" style="background: rgba(250, 204, 21, 0.1); color: #facc15;">Au</div>
-                    <div>
-                        <div class="coin-name">Gold</div>
-                        <div class="coin-ticker">XAU/USD</div>
-                    </div>
-                </div>
-                <div class="coin-price">
-                    <div class="coin-val">RM 8,320</div>
-                    <div class="coin-change down">-0.4%</div>
-                </div>
-            </div>
+        <div class="menu-section">
+            <div class="menu-title">Bayar</div>
+            <!-- Link ke Transfer -->
+            <a href="transfer.html" class="menu-item">
+                <div class="menu-item-left"><span class="menu-icon">↗️</span> Hantar kripto</div>
+                <span class="arrow">›</span>
+            </a>
+        </div>
+        
+        <div class="menu-section" style="border: none;">
+            <div class="menu-title">Lagi</div>
+            <a href="#" class="menu-item">
+                <div class="menu-item-left"><span class="menu-icon">📚</span> Belajar</div>
+                <span class="arrow">›</span>
+            </a>
+            <a href="#" class="menu-item">
+                <div class="menu-item-left"><span class="menu-icon">❓</span> Bantuan</div>
+                <span class="arrow">›</span>
+            </a>
         </div>
     </div>
 
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="avatar" onclick="toggleSidebar()" id="avatar-initial">P</div>
+        <div class="bell">🔔</div>
+    </div>
+
+    <!-- Main Content (Gambar 2) -->
+    <div class="content">
+        
+        <!-- Baki & Butang -->
+        <div style="background: var(--bg-gray); padding: 20px; border-radius: 16px; margin-bottom: 25px;">
+            <p style="font-size: 13px; color: var(--text-muted); font-weight: 600; margin-bottom: 5px;">Jumlah Portfolio</p>
+            <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 15px;" id="balance">RM 0.00</h1>
+            <div style="display: flex; gap: 10px;">
+                <!-- Link ke Deposit -->
+                <button onclick="window.location.href='deposit.html'" style="flex: 1; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer;">Deposit</button>
+                <!-- Link ke Withdraw (Trap) -->
+                <button onclick="window.location.href='withdraw.html'" style="flex: 1; padding: 14px; background: var(--text-main); color: white; border: none; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer;">Withdraw</button>
+            </div>
+        </div>
+
+        <h2 class="section-title">Pergerakan terbesar (24j)</h2>
+        <div class="h-scroll">
+            <div class="h-card">
+                <div class="h-card-header">
+                    <div class="h-card-icon" style="background: #a855f7;">B</div> BERA <span style="color: var(--text-muted); font-size: 12px;">›</span>
+                </div>
+                <div class="h-card-percent" style="color: var(--green);">34.05%</div>
+                <div class="h-card-price">RM 0.55</div>
+                <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+                    <path d="M0,25 Q20,20 40,22 T70,15 T100,5" fill="none" stroke="var(--primary)" stroke-width="2"/>
+                </svg>
+            </div>
+            <div class="h-card">
+                <div class="h-card-header">
+                    <div class="h-card-icon" style="background: #8b5cf6;">T</div> TIA <span style="color: var(--text-muted); font-size: 12px;">›</span>
+                </div>
+                <div class="h-card-percent" style="color: var(--red);">-13.58%</div>
+                <div class="h-card-price">RM 1.54</div>
+                <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+                    <path d="M0,10 Q30,8 50,15 T100,25" fill="none" stroke="var(--primary)" stroke-width="2"/>
+                </svg>
+            </div>
+            <div class="h-card">
+                <div class="h-card-header">
+                    <div class="h-card-icon" style="background: #000;">X</div> XRP <span style="color: var(--text-muted); font-size: 12px;">›</span>
+                </div>
+                <div class="h-card-percent" style="color: var(--red);">-10.22%</div>
+                <div class="h-card-price">RM 2.15</div>
+                <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+                    <path d="M0,5 Q20,15 40,10 T80,20 T100,28" fill="none" stroke="var(--primary)" stroke-width="2"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="watchlist-header">
+            <h2>Watchlist</h2>
+            <span class="edit-btn">Sunting</span>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active">1h</div>
+            <div class="tab">1m</div>
+            <div class="tab">1b</div>
+            <div class="tab">6b</div>
+            <div class="tab">1t</div>
+            <div class="tab">Semua</div>
+        </div>
+
+        <!-- Bitcoin Row -->
+        <div class="coin-list-card">
+            <div class="coin-row">
+                <div class="coin-left">
+                    <div class="coin-icon" style="background: #f7931a;">₿</div>
+                    <div class="coin-names">
+                        <h3>Bitcoin</h3>
+                        <p>BTC</p>
+                    </div>
+                </div>
+                <div class="coin-right">
+                    <svg class="coin-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+                        <path d="M0,15 Q20,25 40,10 T80,15 T100,20" fill="none" stroke="var(--red)" stroke-width="2"/>
+                    </svg>
+                    <div class="coin-price">RM 279,678</div>
+                    <div class="coin-change down">-3.27%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ethereum Row -->
+        <div class="coin-list-card">
+            <div class="coin-row">
+                <div class="coin-left">
+                    <div class="coin-icon" style="background: #627eea;">Ξ</div>
+                    <div class="coin-names">
+                        <h3>Ethereum</h3>
+                        <p>ETH</p>
+                    </div>
+                </div>
+                <div class="coin-right">
+                    <svg class="coin-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+                        <path d="M0,25 Q30,10 60,20 T100,5" fill="none" stroke="var(--red)" stroke-width="2"/>
+                    </svg>
+                    <div class="coin-price">RM 7,857</div>
+                    <div class="coin-change down">-3.48%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="add-coin">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; justify-content: center; align-items: center; font-size: 20px;">+</div>
+            Tambah duit
+        </div>
+
+    </div>
+
+    <!-- Bottom Nav -->
     <div class="bottom-nav">
-        <a href="dashboard.html" class="nav-item active"><span class="nav-icon">🏠</span> Home</a>
-        <a href="#" class="nav-item"><span class="nav-icon">📈</span> Market</a>
-        <a href="deposit.html" class="nav-item"><span class="nav-icon">💳</span> Deposit</a>
-        <a href="#" class="nav-item"><span class="nav-icon">👤</span> Account</a>
+        <a href="dashboard.html" class="nav-item active">
+            <span class="nav-icon">🏠</span> Utama
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">🧭</span> Teroka
+        </a>
     </div>
 
     <script>
-        document.getElementById('uname').textContent = localStorage.getItem('investor_name') || 'Pelabur';
+        // Ambil nama
+        let name = localStorage.getItem('investor_name') || 'Pelabur';
+        document.getElementById('uname-sidebar').textContent = name;
+        document.getElementById('avatar-initial').textContent = name.charAt(0).toUpperCase();
+
+        // Baki
         let balance = parseFloat(localStorage.getItem('fake_balance') || '0');
-        let points = Array(20).fill(0);
-        
         document.getElementById('balance').textContent = `RM ${balance.toFixed(2)}`;
 
-        function updateDashboard() {
-            document.getElementById('balance').textContent = `RM ${balance.toFixed(2)}`;
-            
-            if (balance > 0) {
-                let profit = balance - 100;
-                let pct = (profit / 100) * 100;
-                document.getElementById('profit').textContent = `+ RM ${profit.toFixed(2)} (${pct.toFixed(2)}%) Hari Ini`;
-                document.getElementById('profit').style.color = "#10b981";
-            }
-
-            points.push(balance);
-            if(points.length > 20) points.shift();
-            
-            let d = "", fillD = `M 0,160 `;
-            let minVal = Math.min(...points) - 5, maxVal = Math.max(...points) + 5;
-            let range = maxVal - minVal || 1;
-
-            points.forEach((p, i) => {
-                let x = (i / 19) * 400;
-                let y = 160 - ((p - minVal) / range) * 160;
-                if(y < 0) y = 0;
-                d += (i === 0 ? "M" : "L") + ` ${x},${y} `;
-                fillD += `L ${x},${y} `;
-            });
-            fillD += `L 400,160 Z`;
-
-            document.getElementById('chart-line').setAttribute('d', d);
-            document.getElementById('chart-fill').setAttribute('d', fillD);
+        // Sidebar Toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('open');
         }
-        updateDashboard();
 
+        // Auto naik duit kalau ada duit (Fake Profit)
         setInterval(() => {
             if (balance > 0) {
-                balance += (Math.random() * 0.80);
+                balance += (Math.random() * 0.50);
                 localStorage.setItem('fake_balance', balance);
-                updateDashboard();
+                document.getElementById('balance').textContent = `RM ${balance.toFixed(2)}`;
             }
-        }, 2000);
+        }, 3000);
     </script>
 </body>
 </html>
